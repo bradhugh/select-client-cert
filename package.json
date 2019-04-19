@@ -4,7 +4,7 @@
   "description": "Node module for selecting a client certificate",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "keywords": [
     "client",
@@ -17,6 +17,7 @@
   "author": "Brad Hughes",
   "license": "MIT",
   "dependencies": {
+    "bindings": "^1.5.0",
     "nan": "^2.13.2"
   }
 }
