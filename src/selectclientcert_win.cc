@@ -1,44 +1,62 @@
 #include "selectclientcert.h"
 
+template<class THandle>
+class handle_wrapper
+{
+private:
+	THandle m_handle;
+
+protected:
+	virtual void release(THandle handle)
+	{
+	}
+
+public:
+	handle_wrapper(THandle handle)
+	{
+		m_handle = handle;
+	}
+
+	handle_wrapper(const handle_wrapper&) = delete;
+
+	THandle get()
+	{
+		return m_handle;
+	}
+
+	bool valid()
+	{
+		return m_handle != 0
+			&& m_handle != INVALID_HANDLE_VALUE;
+	}
+
+	~handle_wrapper()
+	{
+		if (this->valid())
+		{
+			this->release(m_handle);
+		}
+	}
+};
+
+class store_wrapper: public handle_wrapper<HCERTSTORE>
+{
+public:
+	store_wrapper(HCERTSTORE handle): handle_wrapper(handle) {}
+
+protected:
+	virtual void release(HCERTSTORE hStore) override
+	{
+		CertCloseStore(hStore, 0);
+	}
+};
+
 void ReportError(LPCSTR method, DWORD status, Nan::NAN_METHOD_ARGS_TYPE info)
 {
 	// TODO: Include the method and error code
 	info.GetIsolate()->ThrowException(v8::Exception::Error(
 		v8::String::NewFromUtf8(info.GetIsolate(), "A Windows API Function failed")));
 }
-
-class store_wrapper
-{
-private:
-	HCERTSTORE m_hStore;
-
-public:
-	store_wrapper(HCERTSTORE hStore)
-	{
-		m_hStore = hStore;
-	}
-
-	store_wrapper(const store_wrapper&) = delete;
-
-	HCERTSTORE getHandle()
-	{
-		return m_hStore;
-	}
-
-	bool isValid()
-	{
-		return m_hStore != 0
-			&& m_hStore != INVALID_HANDLE_VALUE;
-	}
-
-	~store_wrapper()
-	{
-		if (this->isValid())
-		{
-			CertCloseStore(m_hStore, 0);
-		}
-	}
-};
 
 NAN_METHOD(SelectClientCert)
 {
@@ -51,7 +69,7 @@ NAN_METHOD(SelectClientCert)
 		CERT_STORE_CREATE_NEW_FLAG,
 		nullptr);
 
-	if (!memStore.isValid())
+	if (!memStore.valid())
 	{
 		ReportError("CertOpenStore", GetLastError(), info);
 		return;
