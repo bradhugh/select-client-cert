@@ -1,0 +1,22 @@
+{
+  "name": "select-client-cert",
+  "version": "0.0.1",
+  "description": "Node module for selecting a client certificate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "client",
+    "certificate",
+    "smartcard",
+    "hello",
+    "pin",
+    "electron"
+  ],
+  "author": "Brad Hughes",
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^2.13.2"
+  }
+}

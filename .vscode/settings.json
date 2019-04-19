@@ -1,0 +1,6 @@
+{
+    "files.exclude": {
+        ".vscode/ipch/": true,
+        "build/": true,
+    }
+}
