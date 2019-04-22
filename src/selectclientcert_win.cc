@@ -56,6 +56,7 @@ class store_wrapper: public handle_wrapper<HCERTSTORE>
 {
 public:
 	store_wrapper(HCERTSTORE handle): handle_wrapper(handle) {}
+	store_wrapper(const store_wrapper&) = delete;
 
 protected:
 	virtual void internalRelease(HCERTSTORE hStore) override
@@ -68,6 +69,8 @@ class cert_context : public handle_wrapper<PCCERT_CONTEXT>
 {
 public:
 	cert_context(PCCERT_CONTEXT pContext) : handle_wrapper(pContext) {}
+	cert_context(const cert_context&) = delete;
+
 protected:
 	virtual void internalRelease(PCCERT_CONTEXT pContext) override
 	{
@@ -92,13 +95,23 @@ std::unique_ptr<cert_context> GetCertFromString(LPCSTR szCert)
 	}
 
 	// Allocate
-	auto pbBinary = std::make_unique<BYTE>(cbBinary);
+	auto pbBinary = std::make_unique<BYTE[]>(cbBinary);
 	if (pbBinary == nullptr)
 	{
 		return nullptr;
 	}
 
-	// Create context
+	// Initialize
+	memset(pbBinary.get(), 0, cbBinary);
+
+	// Actually fill out the binary
+	result = ::CryptStringToBinary(szCert, 0, CRYPT_STRING_BASE64HEADER, pbBinary.get(), &cbBinary, nullptr, nullptr);
+	if (!result)
+	{
+		return nullptr;
+	}
+
+	// Create context from binary
 	PCCERT_CONTEXT tempCtx = ::CertCreateCertificateContext(
 		X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
 		pbBinary.get(),
@@ -175,10 +188,10 @@ NAN_METHOD(SelectClientCert)
 	std::vector<std::unique_ptr<cert_context>> certContexts;
 	for (uint32_t i = 0; i < certs->Length(); i++)
 	{
-		char* szCert = *v8::String::Utf8Value(certs->Get(i));
-		auto certContext = GetCertFromString(szCert);
+		v8::String::Utf8Value strData(isolate, certs->Get(i));
+		auto certContext = GetCertFromString(*strData);
 
-		certContexts.push_back(std::move(certContext));
+		certContexts.emplace_back(std::move(certContext));
 	}
 
 	// Add the certs to the memory store
