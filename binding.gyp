@@ -9,14 +9,14 @@
                 "src/selectclientcert.cc"
             ],
             "conditions": [
-                # [
-                #     "OS == 'mac'",
-                #     {
-                #         "sources": [
-                #             "src/selectclientcert_mac.cc"
-                #         ]
-                #     }
-                # ],
+                [
+                    "OS == 'mac'",
+                    {
+                        "sources": [
+                            "src/selectclientcert_mac.cc"
+                        ]
+                    }
+                ],
                 [
                     "OS == 'win'",
                     {
@@ -28,15 +28,15 @@
                             "cryptui.lib"
                         ]
                     }
+                ],
+                [
+                    "OS not in ['mac','win']",
+                    {
+                        "sources": [
+                            "src/selectclientcert_posix.cc"
+                        ]
+                    }
                 ]
-                # [
-                #     "OS not in ['mac','win']",
-                #     {
-                #         "sources": [
-                #             "src/selectclientcert_posix.cc"
-                #         ]
-                #     }
-                # ]
             ]
         }
     ]
