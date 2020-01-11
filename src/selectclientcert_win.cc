@@ -82,7 +82,7 @@ void ReportError(LPCSTR method, DWORD status, Nan::NAN_METHOD_ARGS_TYPE info)
 {
 	// TODO: Include the method and error code
 	info.GetIsolate()->ThrowException(v8::Exception::Error(
-		v8::String::NewFromUtf8(info.GetIsolate(), "A Windows API Function failed")));
+		v8::String::NewFromUtf8(info.GetIsolate(), "A Windows API Function failed", v8::NewStringType::kNormal).ToLocalChecked()));
 }
 
 std::unique_ptr<cert_context> GetCertFromString(LPCSTR szCert)
@@ -184,11 +184,13 @@ NAN_METHOD(SelectClientCert)
 
 	auto certs = info[0].As<v8::Array>();
 
+	auto context = isolate->GetCurrentContext();
+
 	// Create each context from the certs passed in
 	std::vector<std::unique_ptr<cert_context>> certContexts;
 	for (uint32_t i = 0; i < certs->Length(); i++)
 	{
-		v8::String::Utf8Value strData(isolate, certs->Get(i));
+		v8::String::Utf8Value strData(isolate, certs->Get(context, i).ToLocalChecked());
 		auto certContext = GetCertFromString(*strData);
 
 		certContexts.emplace_back(std::move(certContext));
