@@ -1,13 +1,13 @@
 {
   "name": "@bradhugh/select-client-cert",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node module for selecting a client certificate",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
   },
   "engines": {
-    "node": ">=0.12"
+    "node": ">=0.10"
   },
   "repository": {
     "type": "git",
