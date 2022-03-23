@@ -1,6 +1,6 @@
 {
   "name": "@bradhugh/select-client-cert",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Node module for selecting a client certificate",
   "main": "index.js",
   "scripts": {
@@ -32,6 +32,7 @@
   "homepage": "https://github.com/bradhugh/select-client-cert#readme",
   "dependencies": {
     "bindings": "^1.5.0",
-    "nan": "^2.14.0"
+    "nan": "^2.14.0",
+    "node-gyp": "^9.0.0"
   }
 }
