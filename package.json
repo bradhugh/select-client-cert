@@ -1,5 +1,5 @@
 {
-  "name": "@bradhugh/select-client-cert",
+  "name": "select-client-cert",
   "version": "1.0.4",
   "description": "Node module for selecting a client certificate",
   "main": "index.js",
