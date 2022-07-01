@@ -13,9 +13,6 @@
     "type": "git",
     "url": "git://github.com/bradhugh/select-client-cert.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "keywords": [
     "client",
     "certificate",
