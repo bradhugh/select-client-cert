@@ -1,3 +1,3 @@
-declare module "@bradhugh/select-client-cert" {
+declare module "select-client-cert" {
     function selectClientCert(certs: string[]): number;
 }
